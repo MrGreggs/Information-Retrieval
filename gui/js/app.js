@@ -12,6 +12,10 @@ document.getElementById("search-button").addEventListener("click", () => {
     endDate: endDate,
   };
 
+  // Log the payload to ensure it's correct
+  console.log("Request payload:", payload);
+
+  // Make the POST request
   fetch("http://127.0.0.1:5000/api/search", {
     method: "POST",
     headers: {
@@ -19,55 +23,40 @@ document.getElementById("search-button").addEventListener("click", () => {
     },
     body: JSON.stringify(payload),
   })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data); // Debugging purposes
-    displayResults(data.results);
-  })
-  .catch(error => console.error("Error:", error));
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data); // Debugging: Ensure you receive the expected data
+      displayResults(data.results);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 });
 
+// Function to display results
 function displayResults(results) {
-  const resultsDiv = document.getElementById("results");
-  if (!resultsDiv) {
-    console.error("Results div not found!");
+  const resultsTable = document.getElementById("results-table").getElementsByTagName("tbody")[0];
+  resultsTable.innerHTML = ""; // Clear previous results
+
+  if (!results || results.length === 0) {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 5;
+    td.textContent = "No results found.";
+    tr.appendChild(td);
+    resultsTable.appendChild(tr);
     return;
   }
 
-  resultsDiv.innerHTML = ""; // Clear previous results
-
-  if (results.length === 0) {
-    resultsDiv.textContent = "No results found.";
-    return;
-  }
-
-  results.forEach(item => {
+  results.forEach((item) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${item.name}</td>
       <td>${item.date}</td>
-      <td>${item.parliamentaryPeriod}</td>
-      <td>${item.politicalParty}</td>
+      <td>${item.period}</td>
+      <td>${item.party}</td>
       <td>${item.speech}</td>
     `;
-    resultsDiv.appendChild(tr);
+    resultsTable.appendChild(tr);
   });
 }
-
-// Fetch data and handle results
-document.getElementById("search-button").addEventListener("click", () => {
-  const keyword = document.getElementById("keyword").value.toLowerCase();
-
-  fetch("http://127.0.0.1:5000/api/search", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ keyword: keyword }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    displayResults(data.results); // Call the function to display results
-  })
-  .catch(error => console.error("Error:", error));
-});
