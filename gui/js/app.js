@@ -1,21 +1,17 @@
 document.getElementById("search-button").addEventListener("click", () => {
   const keyword = document.getElementById("keyword").value.toLowerCase();
-  const period = document.getElementById("period").value;
+  const periodSelect = document.getElementById("period");
+  const period = periodSelect.options[periodSelect.selectedIndex].value.trim();  // Ensure no extra spaces
   const startDate = document.getElementById("start-date").value;
   const endDate = document.getElementById("end-date").value;
 
-  // Construct the request payload
   const payload = {
     keyword: keyword,
-    period: period,
+    period: period,  // Send the period value directly
     startDate: startDate,
     endDate: endDate,
   };
 
-  // Log the payload to ensure it's correct
-  console.log("Request payload:", payload);
-
-  // Make the POST request
   fetch("http://127.0.0.1:5000/api/search", {
     method: "POST",
     headers: {
@@ -25,7 +21,6 @@ document.getElementById("search-button").addEventListener("click", () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data); // Debugging: Ensure you receive the expected data
       displayResults(data.results);
     })
     .catch((error) => {
