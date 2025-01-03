@@ -1,8 +1,8 @@
 import pandas as pd
-import unicodedata
 import re
+import unicodedata
 
-# list of common words that should be removed from the text during the preprocessing
+# List of common stop words
 STOP_WORDS = {
     "ο", "η", "το", "οι", "τα", "του", "τον", "των", "τους", "τη", "την", "της", "αν", "ν", "κ", "τις", "και", "σε", "με", 
     "για", "να", "στο", "στον", "στου", "στη", "στην", "στης", "στα", "στων", "στις", "στες", "κ.", "κα", "που", 
@@ -45,37 +45,30 @@ def clean_text(text):
     cleaned_words = [convert_to_first_singular(word) for word in words if word not in STOP_WORDS]
     return ' '.join(cleaned_words)
 
-def preprocess_data(file_path):
-    """Load, clean, and preprocess the Greek dataset."""
-    # load the CSV file
-    df = pd.read_csv(file_path, encoding="utf-8")
+def create_inverted_index(input_file):
+    """Create the inverted index and save it to a file."""
+    df = pd.read_csv(input_file, encoding="utf-8")
+    inverted_index = {}
+    
+    for index, row in df.iterrows():
+        speech = row['speech']
+        cleaned_speech = clean_text(speech)
+        words = cleaned_speech.split()
+        for word in words:
+            if word in inverted_index:
+                inverted_index[word].append(index)
+            else:
+                inverted_index[word] = [index]
+    
+    # Save the inverted index to a file
+    with open("inverted_index.txt", "w", encoding="utf-8") as f:
+        for word, doc_ids in inverted_index.items():
+            f.write(f"{word}:{','.join(map(str, doc_ids))}\n")
+    
+    print("Inverted index created and saved to 'inverted_index.txt'.")
+    return inverted_index
 
-    # parse dates to a standard format from DD/MM/YY to YY/MM/DD
-    df["sitting_date"] = pd.to_datetime(df["sitting_date"], format="%d/%m/%Y", errors="coerce")
-
-    # Normalize text fields
-    text_columns = [
-        "member_name",
-        "parliamentary_period",
-        "parliamentary_session",
-        "parliamentary_sitting",
-        "political_party",
-        "government",
-        "member_region",
-        "roles",
-        "speech"
-    ]
-    for col in text_columns:
-        df[col] = df[col].apply(clean_text)
-
-    return df
-
-# Example usage
 if __name__ == "__main__":
-    # Replace with your actual file path
-    input_file = "small.txt"
-    processed_df = preprocess_data(input_file)
-    print(processed_df.head())  # Display the first few rows of the cleaned dataset
-    # Save the processed data
-    processed_df.to_csv("clean.csv", index=False, encoding="utf-8")
+    input_file = "medium.txt"
+    inverted_index = create_inverted_index(input_file)
 
