@@ -25,3 +25,12 @@ button {
   background-color: #f9f9f9;
 }
 
+.speech-content {
+  display: flex;
+  flex-direction: column;
+  align-items: start; 
+}
+
+.speech-preview {
+  margin-bottom: 5px; 
+}

@@ -28,7 +28,7 @@ document.getElementById("search-button").addEventListener("click", () => {
     });
 });
 
-// Function to display results
+
 function displayResults(results) {
   const resultsTable = document.getElementById("results-table").getElementsByTagName("tbody")[0];
   resultsTable.innerHTML = ""; // Clear previous results
@@ -36,7 +36,7 @@ function displayResults(results) {
   if (!results || results.length === 0) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 5;
+    td.colSpan = 5; // Adjust for your table's number of columns
     td.textContent = "No results found.";
     tr.appendChild(td);
     resultsTable.appendChild(tr);
@@ -45,13 +45,45 @@ function displayResults(results) {
 
   results.forEach((item) => {
     const tr = document.createElement("tr");
+    let speechContent = item.speech;
+    const isTruncated = speechContent.length > 250;
+    const speechPreview = isTruncated ? speechContent.substring(0, 50) + "..." : speechContent;
+    const showMoreButton = isTruncated
+      ? `<button class="show-more" data-speech="${speechContent}" data-truncated="${isTruncated}">Show More</button>`
+      : "";
+    const showLessButton = !isTruncated ? "" : `<button class="show-less" style="display:none;">Show Less</button>`;
+
     tr.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.date}</td>
-      <td>${item.period}</td>
-      <td>${item.party}</td>
-      <td>${item.speech}</td>
+      <td>${item.member_name}</td>
+      <td>${item.sitting_date}</td>
+      <td>${item.parliamentary_period}</td>
+      <td>${item.political_party}</td>
+      <td>
+        <div class="speech-content">
+          <p class="speech-preview">${speechPreview}</p>
+          ${showMoreButton}
+          ${showLessButton}
+        </div>
+      </td>
     `;
     resultsTable.appendChild(tr);
+  });
+
+  document.querySelectorAll(".show-more").forEach(button => {
+    button.addEventListener("click", (e) => {
+      const fullSpeech = e.target.dataset.speech;
+      e.target.parentElement.querySelector(".speech-preview").textContent = fullSpeech;
+      e.target.style.display = "none";  // Hide "Show More" button
+      e.target.parentElement.querySelector(".show-less").style.display = "inline-block"; 
+    });
+  });
+
+  document.querySelectorAll(".show-less").forEach(button => {
+    button.addEventListener("click", (e) => {
+      const truncatedSpeech = e.target.previousElementSibling.dataset.speech.substring(0, 50) + "...";
+      e.target.parentElement.querySelector(".speech-preview").textContent = truncatedSpeech;
+      e.target.style.display = "none";  // Hide "Show Less" button
+      e.target.parentElement.querySelector(".show-more").style.display = "inline-block"; 
+    });
   });
 }
