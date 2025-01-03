@@ -16,8 +16,6 @@ def get_speech_ids(keyword):
         if keyword in data:
             documents = data[keyword].get("documents", [])
             speech_ids = list({doc["speech_id"] for doc in documents})
-            print("keyword found")
-            print(len(speech_ids))
             return speech_ids
         else:
             return []  # Keyword not found
@@ -50,7 +48,6 @@ def search():
 
     # Retrieve speech IDs from inverted index
     speech_ids = get_speech_ids(keyword)
-    print(f"Speech IDs for keyword '{keyword}': {speech_ids}")
 
     if not speech_ids:
         return jsonify({"results": []})  # No matching speech IDs found
@@ -80,7 +77,6 @@ def search():
             (not end_date_obj or datetime.strptime(item.get("sitting_date", ""), "%d/%m/%Y") <= end_date_obj)
         ]
 
-    print(f"Filtered data: {filtered_data}")
     return jsonify({"results": filtered_data})
 
 if __name__ == '__main__':
