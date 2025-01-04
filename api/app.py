@@ -12,14 +12,18 @@ def get_speech_ids(keyword):
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
-        
-        if keyword in data:
-            documents = data[keyword].get("documents", [])
+
+        # Normalize keys and keyword for comparison
+        normalized_data = {k.lower().strip(): v for k, v in data.items()}
+        keyword_normalized = keyword.lower().strip()
+
+        if keyword_normalized in normalized_data:
+            documents = normalized_data[keyword_normalized].get("documents", [])
             speech_ids = list({doc["speech_id"] for doc in documents})
             return speech_ids
         else:
-            return []  # Keyword not found
-    
+            return []
+
     except FileNotFoundError:
         print(f"Error: File not found at path {file_path}")
         return []

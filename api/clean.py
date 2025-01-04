@@ -69,6 +69,6 @@ def create_inverted_index(input_file):
     return inverted_index
 
 if __name__ == "__main__":
-    input_file = "medium.txt"
+    input_file = "medium.csv"
     inverted_index = create_inverted_index(input_file)
 

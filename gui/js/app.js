@@ -28,7 +28,6 @@ document.getElementById("search-button").addEventListener("click", () => {
     });
 });
 
-
 function displayResults(results) {
   const resultsTable = document.getElementById("results-table").getElementsByTagName("tbody")[0];
   resultsTable.innerHTML = ""; // Clear previous results
@@ -46,7 +45,7 @@ function displayResults(results) {
   results.forEach((item) => {
     const tr = document.createElement("tr");
     let speechContent = item.speech;
-    const isTruncated = speechContent.length > 250;
+    const isTruncated = speechContent.length > 50;
     const speechPreview = isTruncated ? speechContent.substring(0, 50) + "..." : speechContent;
     const showMoreButton = isTruncated
       ? `<button class="show-more" data-speech="${speechContent}" data-truncated="${isTruncated}">Show More</button>`
@@ -59,31 +58,31 @@ function displayResults(results) {
       <td>${item.parliamentary_period}</td>
       <td>${item.political_party}</td>
       <td>
-        <div class="speech-content">
-          <p class="speech-preview">${speechPreview}</p>
-          ${showMoreButton}
-          ${showLessButton}
-        </div>
+        <p class="speech-preview">${speechPreview}</p>
+        ${showMoreButton}
+        ${showLessButton}
       </td>
     `;
     resultsTable.appendChild(tr);
   });
 
+  // Add event listeners for "Show More" buttons
   document.querySelectorAll(".show-more").forEach(button => {
     button.addEventListener("click", (e) => {
       const fullSpeech = e.target.dataset.speech;
       e.target.parentElement.querySelector(".speech-preview").textContent = fullSpeech;
       e.target.style.display = "none";  // Hide "Show More" button
-      e.target.parentElement.querySelector(".show-less").style.display = "inline-block"; 
+      e.target.parentElement.querySelector(".show-less").style.display = "inline-block";  // Show "Show Less" button
     });
   });
 
+  // Add event listeners for "Show Less" buttons
   document.querySelectorAll(".show-less").forEach(button => {
     button.addEventListener("click", (e) => {
       const truncatedSpeech = e.target.previousElementSibling.dataset.speech.substring(0, 50) + "...";
       e.target.parentElement.querySelector(".speech-preview").textContent = truncatedSpeech;
       e.target.style.display = "none";  // Hide "Show Less" button
-      e.target.parentElement.querySelector(".show-more").style.display = "inline-block"; 
+      e.target.parentElement.querySelector(".show-more").style.display = "inline-block";  // Show "Show More" button
     });
   });
 }
