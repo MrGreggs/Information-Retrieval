@@ -3,6 +3,11 @@ import sys
 import re
 import json
 
+def is_greek_word(word):
+    """Check if the word consists only of Greek letters."""
+    # The regular expression for a Greek word (includes accented characters)
+    return bool(re.match(r'^[\u0370-\u03FF\u1F00-\u1FFF]+$', word))
+
 def create_inverted_index(input_file):
     inverted_index = {}
 
@@ -16,42 +21,48 @@ def create_inverted_index(input_file):
 
         # Add words from the speech to the inverted index
         for word in words:
-            if word not in inverted_index:
-                inverted_index[word] = {
-                    'frequency': 0,
-                    'documents': []
-                }
-            inverted_index[word]['frequency'] += 1
-            inverted_index[word]['documents'].append({
-                'speech_id': idx,
-                'count_in_speech': words.count(word)
-            })
+            # Only include fully Greek words
+            if is_greek_word(word):
+                if word not in inverted_index:
+                    inverted_index[word] = {
+                        'frequency': 0,
+                        'documents': []
+                    }
+                inverted_index[word]['frequency'] += 1
+                inverted_index[word]['documents'].append({
+                    'speech_id': idx,
+                    'count_in_speech': words.count(word)
+                })
         
         # Process the member_name column (as a single entity)
         member_name = str(row['member_name']).lower()
-        if member_name not in inverted_index:
-            inverted_index[member_name] = {
-                'frequency': 0,
-                'documents': []
-            }
-        inverted_index[member_name]['frequency'] += 1
-        inverted_index[member_name]['documents'].append({
-            'speech_id': idx,
-            'count_in_speech': 1  # Always 1 since it's not tokenized
-        })
+        # Only include fully Greek words
+        if is_greek_word(member_name):
+            if member_name not in inverted_index:
+                inverted_index[member_name] = {
+                    'frequency': 0,
+                    'documents': []
+                }
+            inverted_index[member_name]['frequency'] += 1
+            inverted_index[member_name]['documents'].append({
+                'speech_id': idx,
+                'count_in_speech': 1  # Always 1 since it's not tokenized
+            })
 
         # Process the political_party column (as a single entity)
         political_party = str(row['political_party']).lower()
-        if political_party not in inverted_index:
-            inverted_index[political_party] = {
-                'frequency': 0,
-                'documents': []
-            }
-        inverted_index[political_party]['frequency'] += 1
-        inverted_index[political_party]['documents'].append({
-            'speech_id': idx,
-            'count_in_speech': 1  # Always 1 since it's not tokenized
-        })
+        # Only include fully Greek words
+        if is_greek_word(political_party):
+            if political_party not in inverted_index:
+                inverted_index[political_party] = {
+                    'frequency': 0,
+                    'documents': []
+                }
+            inverted_index[political_party]['frequency'] += 1
+            inverted_index[political_party]['documents'].append({
+                'speech_id': idx,
+                'count_in_speech': 1  # Always 1 since it's not tokenized
+            })
 
     # Sort the inverted index alphabetically
     sorted_inverted_index = dict(sorted(inverted_index.items()))
@@ -73,3 +84,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
