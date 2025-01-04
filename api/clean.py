@@ -13,7 +13,7 @@ STOP_WORDS = {
     "εισαι", "ειμαστε", "ειστε", "εχει", "ειχαν", "εχω", "εχουμε", "εχουν", "λοιπον", "ακριβως", "βασικα", 
     "εννοειται", "οπως", "δηλαδη", "επι", "ναι", "οχι", "δεν", "δε", "μην", "μη", "οταν", "οπως", "οτι", "κατ", "καν", "εκ",
     "κανεις", "καμια", "κανεναν", "κανενα", "κανενος", "μετα", "τωρα", "θα", "ξανα", "παρ", "α", "ε", "ω", "ολους", "γιατι",
-    "επισης", "ενα", "ολοι", "οποιο", "οποια", "οποιους", "οποιες", "δια", "δυο", "ομως", "πρεπει", "μπορει", "αν"
+    "επισης", "ενα", "ολοι", "οποιο", "οποια", "οποιους", "οποιες", "δια", "δυο", "ομως", "πρεπει", "μπορει", "αν", "προεδρε", "μα"
 }
 
 def convert_to_first_singular(verb):
@@ -36,39 +36,34 @@ def clean_text(text):
     """Clean and normalize Greek text."""
     if pd.isna(text):  # handle NaN values
         return ""
-    # remove diacritics, convert to lowercase, and tokenize
+    
+    # Remove diacritics, convert to lowercase, and tokenize
     text = remove_diacritics(text).lower()
-    # remove punctuation and special characters
-    text = re.sub(r'[^\w\s]', '', text)
-    # remove stop words
-    words = text.split()
-    cleaned_words = [convert_to_first_singular(word) for word in words if word not in STOP_WORDS]
-    return ' '.join(cleaned_words)
+    text = re.sub(r'[^\w\s]', '', text)  # Remove punctuation and special characters
 
-def create_inverted_index(input_file):
-    """Create the inverted index and save it to a file."""
-    df = pd.read_csv(input_file, encoding="utf-8")
-    inverted_index = {}
+    # Tokenize the text (split into words)
+    words = text.split()
+
+    # Convert verbs to first singular form (after tokenizing)
+    words = [convert_to_first_singular(word) for word in words]
+
+    # Remove stop words (after converting verbs)
+    cleaned_words = [word for word in words if word not in STOP_WORDS]
     
-    for index, row in df.iterrows():
-        speech = row['speech']
-        cleaned_speech = clean_text(speech)
-        words = cleaned_speech.split()
-        for word in words:
-            if word in inverted_index:
-                inverted_index[word].append(index)
-            else:
-                inverted_index[word] = [index]
-    
-    # Save the inverted index to a file
-    with open("inverted_index.txt", "w", encoding="utf-8") as f:
-        for word, doc_ids in inverted_index.items():
-            f.write(f"{word}:{','.join(map(str, doc_ids))}\n")
-    
-    print("Inverted index created and saved to 'inverted_index.txt'.")
-    return inverted_index
+    return ' '.join(cleaned_words)
 
 if __name__ == "__main__":
     input_file = "medium.csv"
-    inverted_index = create_inverted_index(input_file)
+    
+    df = pd.read_csv(input_file, encoding='utf-8')
+    
+    # Clean the 'speech' column and replace the original column with the cleaned content
+    if 'speech' in df.columns:
+        df['speech'] = df['speech'].apply(clean_text)
+
+    # Save the cleaned data to a new CSV file
+    output_file = "final.csv"
+    df.to_csv(output_file, index=False)
+
+    print(f"Cleaned data has been saved to {output_file}")
 
