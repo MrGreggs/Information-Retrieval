@@ -13,7 +13,6 @@ def get_speech_ids(keyword):
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
 
-        # Normalize keys and keyword for comparison
         normalized_data = {k.lower().strip(): v for k, v in data.items()}
         keyword_normalized = keyword.lower().strip()
 
@@ -37,43 +36,40 @@ def get_speech_ids(keyword):
 @app.route('/api/search', methods=['POST'])
 def search():
     request_data = request.json
-    keyword = request_data.get("keyword", "").lower()  # Convert keyword to lowercase
-    period_dash = request_data.get("period", "").strip()  # Ensure no extra whitespace
+    keyword = request_data.get("keyword", "").lower()  # convert keyword to lowercase
+    period_dash = request_data.get("period", "").strip()  # remove no extra whitespace
     period = period_dash.replace('-', ' ')
     start_date = request_data.get("startDate", "")
     end_date = request_data.get("endDate", "")
 
     try:
-        # Parse the dates if provided (only if not empty)
         start_date_obj = datetime.strptime(start_date, "%Y-%m-%d") if start_date else None
         end_date_obj = datetime.strptime(end_date, "%Y-%m-%d") if end_date else None
     except ValueError:
         return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
 
-    # Retrieve speech IDs from inverted index
+    # retrieve speech IDs from inverted index
     speech_ids = get_speech_ids(keyword)
 
     if not speech_ids:
-        return jsonify({"results": []})  # No matching speech IDs found
+        return jsonify({"results": []})  # no matching speech IDs found
 
-    # Load data from medium.csv and match rows based on speech IDs
     filtered_data = []
+    # replace medium.csv with your csv file
     with open('medium.csv', mode='r', encoding='utf-8') as file:
         reader = csv.reader(file)
         headers = next(reader)  # Get the headers
-        headers = [header.strip() for header in headers]  # Strip any whitespace
-        for idx, row in enumerate(reader, start=0):  # Enumerate rows with 0-based index
-            if idx in speech_ids:  # Check if the current row index matches a speech ID
+        headers = [header.strip() for header in headers]  
+        for idx, row in enumerate(reader, start=0):  
+            if idx in speech_ids:  
                 if len(row) != len(headers):
                     print(f"Row length mismatch at index {idx}: {row}")
-                data_row = dict(zip(headers, row))  # Convert row to dictionary with headers as keys
+                data_row = dict(zip(headers, row))  
                 filtered_data.append(data_row)
 
-    # Filter based on the period if provided
     if period:
         filtered_data = [item for item in filtered_data if item.get("parliamentary_period", "").strip() == period]
 
-    # Filter based on date range if provided
     if start_date_obj or end_date_obj:
         filtered_data = [
             item for item in filtered_data if
