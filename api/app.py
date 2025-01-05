@@ -1,3 +1,4 @@
+import sys
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from datetime import datetime
@@ -7,8 +8,8 @@ import json
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-def get_speech_ids(keyword):
-    file_path = "inverted_index.json"
+# function to read and process the JSON file
+def get_speech_ids(file_path, keyword):
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
@@ -33,6 +34,7 @@ def get_speech_ids(keyword):
         print(f"An unexpected error occurred: {e}")
         return []
 
+# route for searching
 @app.route('/api/search', methods=['POST'])
 def search():
     request_data = request.json
@@ -49,13 +51,13 @@ def search():
         return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
 
     # retrieve speech IDs from inverted index
-    speech_ids = get_speech_ids(keyword)
+    inverted_index_path = sys.argv[1]  # Get the file path from command-line argument
+    speech_ids = get_speech_ids(inverted_index_path, keyword)
 
     if not speech_ids:
         return jsonify({"results": []})  # no matching speech IDs found
 
     filtered_data = []
-    # replace medium.csv with your csv file
     with open('medium.csv', mode='r', encoding='utf-8') as file:
         reader = csv.reader(file)
         headers = next(reader)  # Get the headers
@@ -80,4 +82,7 @@ def search():
     return jsonify({"results": filtered_data})
 
 if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("Error: Please provide the path to the inverted index JSON file as a command-line argument.")
+        sys.exit(1)
     app.run(port=5000, debug=True)

@@ -1,8 +1,9 @@
 import pandas as pd
 import re
 import unicodedata
+import sys
 
-# list of common greek words
+# list of common Greek words
 COMMON_WORDS = {
     "ο", "η", "το", "οι", "τα", "του", "τον", "των", "τους", "τη", "την", "της", "αν", "ν", "κ", "τις", "και", "σε", "με", 
     "για", "να", "στο", "στον", "στου", "στη", "στην", "στης", "στα", "στων", "στις", "στες", "κ.", "κα", "που", 
@@ -36,7 +37,7 @@ def clean_text(text):
         return ""
     
     text = remove_diacritics(text).lower()
-    text = re.sub(r'[^\w\s]', '', text)  
+    text = re.sub(r'[^\w\s]', '', text)  # remove punctuation
 
     words = text.split()
 
@@ -47,7 +48,11 @@ def clean_text(text):
     return ' '.join(cleaned_words)
 
 if __name__ == "__main__":
-    input_file = "medium.csv"
+    if len(sys.argv) != 2:
+        print("Usage: python3 app.py <input_csv_file>")
+        sys.exit(1)
+    
+    input_file = sys.argv[1]
     
     df = pd.read_csv(input_file, encoding='utf-8')
     
@@ -60,4 +65,3 @@ if __name__ == "__main__":
     df.to_csv(output_file, index=False)
 
     print(f"Cleaned data has been saved to {output_file}")
-
