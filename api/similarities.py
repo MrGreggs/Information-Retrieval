@@ -12,7 +12,7 @@ df['speech'] = df['speech'].fillna('').astype(str)
 mp_speeches = df.groupby('member_name')['speech'].apply(lambda x: ' '.join(x)).reset_index()
 
 # compute TF-IDF vectors 
-vectorizer = TfidfVectorizer(max_features=5000)  # Adjust max_features if needed
+vectorizer = TfidfVectorizer(max_features=5000)  
 tfidf_matrix = vectorizer.fit_transform(mp_speeches['speech'])
 
 # create a dataframe for party member TF-IDF vectors
