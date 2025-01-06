@@ -10,27 +10,32 @@
   <div class="container">
     <h1>Parliament Speech Search</h1>
 
-    <!-- Search Bar -->
     <div class="search-section">
       <label for="keyword">Keyword:</label>
       <input type="text" id="keyword" placeholder="Enter keyword..." />
     </div>
 
-    <!-- Parliamentary Period Dropdown -->
     <div class="filter-section">
       <label for="period">Parliamentary Period:</label>
       <select id="period">
         <option value="">-- Select a Period --</option>
-        <!-- Dynamic options added here -->
         <option value="period-5">Period 5</option>
         <option value="period-6">Period 6</option>
         <option value="period-7">Period 7</option>
         <option value="period-8">Period 8</option>
         <option value="period-9">Period 9</option>
+        <option value="period-10">Period 10</option>
+        <option value="period-11">Period 11</option>
+        <option value="period-12">Period 12</option>
+        <option value="period-13">Period 13</option>
+        <option value="period-14">Period 14</option>
+        <option value="period-15">Period 15</option>
+        <option value="period-16">Period 16</option>
+        <option value="period-17">Period 17</option>
+        <option value="period-18">Period 18</option>
       </select>
     </div>
 
-    <!-- Date Range -->
     <div class="filter-section">
       <label for="start-date">From:</label>
       <input type="date" id="start-date" />
@@ -38,10 +43,8 @@
       <input type="date" id="end-date" />
     </div>
 
-    <!-- Search Button -->
     <button id="search-button">Search</button>
 
-    <!-- Results Section -->
     <div class="results-section">
       <h2>Results:</h2>
       <table id="results-table">
@@ -55,7 +58,7 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Results will be dynamically appended here -->
+          <!-- results will be added here -->
         </tbody>
       </table>
     </div>

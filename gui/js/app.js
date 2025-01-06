@@ -75,6 +75,17 @@ function displayResults(results) {
       e.target.parentElement.querySelector(".show-less").style.display = "inline-block";  // Show "Show Less" button
     });
   });
+    document.addEventListener("DOMContentLoaded", () => {
+    // Populate parliamentary periods dropdown
+    for (let i = 5; i <= 18; i++) {
+        const periodDropdown = document.getElementById("period");
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = `Period ${i}`;
+            periodDropdown.appendChild(option);
+        }
+    });
+
 
   // Add event listeners for "Show Less" buttons
   document.querySelectorAll(".show-less").forEach(button => {
