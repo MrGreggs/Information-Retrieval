@@ -1,13 +1,13 @@
 document.getElementById("search-button").addEventListener("click", () => {
   const keyword = document.getElementById("keyword").value.toLowerCase();
   const periodSelect = document.getElementById("period");
-  const period = periodSelect.options[periodSelect.selectedIndex].value.trim();  // Ensure no extra spaces
+  const period = periodSelect.options[periodSelect.selectedIndex].value.trim();  
   const startDate = document.getElementById("start-date").value;
   const endDate = document.getElementById("end-date").value;
 
   const payload = {
     keyword: keyword,
-    period: period,  // Send the period value directly
+    period: period,  
     startDate: startDate,
     endDate: endDate,
   };
@@ -30,12 +30,12 @@ document.getElementById("search-button").addEventListener("click", () => {
 
 function displayResults(results) {
   const resultsTable = document.getElementById("results-table").getElementsByTagName("tbody")[0];
-  resultsTable.innerHTML = ""; // Clear previous results
+  resultsTable.innerHTML = ""; 
 
   if (!results || results.length === 0) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 5; // Adjust for your table's number of columns
+    td.colSpan = 5; 
     td.textContent = "No results found.";
     tr.appendChild(td);
     resultsTable.appendChild(tr);
@@ -66,7 +66,6 @@ function displayResults(results) {
     resultsTable.appendChild(tr);
   });
 
-  // Add event listeners for "Show More" buttons
   document.querySelectorAll(".show-more").forEach(button => {
     button.addEventListener("click", (e) => {
       const fullSpeech = e.target.dataset.speech;
@@ -75,19 +74,7 @@ function displayResults(results) {
       e.target.parentElement.querySelector(".show-less").style.display = "inline-block";  // Show "Show Less" button
     });
   });
-    document.addEventListener("DOMContentLoaded", () => {
-    // Populate parliamentary periods dropdown
-    for (let i = 5; i <= 18; i++) {
-        const periodDropdown = document.getElementById("period");
-        const option = document.createElement("option");
-        option.value = i;
-        option.textContent = `Period ${i}`;
-            periodDropdown.appendChild(option);
-        }
-    });
 
-
-  // Add event listeners for "Show Less" buttons
   document.querySelectorAll(".show-less").forEach(button => {
     button.addEventListener("click", (e) => {
       const truncatedSpeech = e.target.previousElementSibling.dataset.speech.substring(0, 50) + "...";
@@ -96,4 +83,14 @@ function displayResults(results) {
       e.target.parentElement.querySelector(".show-more").style.display = "inline-block";  // Show "Show More" button
     });
   });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    for (let i = 5; i <= 18; i++) {
+        const periodDropdown = document.getElementById("period");
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = `Period ${i}`;
+        periodDropdown.appendChild(option);
+        }
+    });
 }
