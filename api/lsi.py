@@ -19,15 +19,15 @@ for doc_id, terms_scores in tf_idf_speech.items():
         term_id = term_idx[term]
         term_doc_matrix[term_id, int(doc_id)] = score
 
-# apply SVD for LSI
-num_topics = 100  # Define the number of topics
+# apply SVD for LSI on term_doc_matrix
+num_topics = 100  # define the number of topics
 svd = TruncatedSVD(n_components=num_topics, n_iter=7, random_state=42)
 lsa_matrix = svd.fit_transform(term_doc_matrix)
 
 # extract top terms for each topic
 top_terms_per_topic = {}
 for topic_idx, terms in enumerate(svd.components_):
-    top_terms = np.argsort(terms)[-10:]  # Get top 10 terms for each topic
+    top_terms = np.argsort(terms)[-10:]  # get top 10 terms for each topic
     top_terms_per_topic[topic_idx] = [list(term_idx.keys())[idx] for idx in top_terms]
 
 with open("lsi_topics.json", "w", encoding="utf-8") as f:

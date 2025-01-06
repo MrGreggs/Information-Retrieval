@@ -48,10 +48,6 @@ def clean_text(text):
     return ' '.join(cleaned_words)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 app.py <input_csv_file>")
-        sys.exit(1)
-    
     input_file = sys.argv[1]
     
     df = pd.read_csv(input_file, encoding='utf-8')
