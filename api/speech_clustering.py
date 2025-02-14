@@ -7,10 +7,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
-# load csv file
-csv_file = sys.argv[1]
-df = pd.read_csv(csv_file)
-
 # load TF-IDF JSON file
 with open("tf_idf_speech.json", "r", encoding="utf-8") as f:
     tf_idf_data = json.load(f)
