@@ -20,7 +20,7 @@ for doc_id, terms_scores in tf_idf_speech.items():
         term_doc_matrix[term_id, int(doc_id)] = score
 
 # apply SVD for LSI on term_doc_matrix
-num_topics = 100  # define the number of topics
+num_topics = 25
 svd = TruncatedSVD(n_components=num_topics, n_iter=7, random_state=42)
 lsa_matrix = svd.fit_transform(term_doc_matrix)
 
