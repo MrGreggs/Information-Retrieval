@@ -6,53 +6,53 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
-# Load CSV file
-csv_file = "small.csv"
+# load CSV file
+csv_file = "data.csv"
 df = pd.read_csv(csv_file)
 
-# Load TF-IDF JSON file
+# load TF-IDF JSON file
 with open("tf_idf_speech.json", "r", encoding="utf-8") as f:
     tf_idf_data = json.load(f)
 
-# Determine maximum vector size dynamically
+# determine maximum vector size dynamically
 MAX_VECTOR_SIZE = max(len(words) for words in tf_idf_data.values())  
 
-# Create a feature matrix
+# create a feature matrix
 speech_vectors = []
 speech_ids = []
 
 for speech_id, words in tf_idf_data.items():
     speech_ids.append(speech_id)
     
-    # Extract TF-IDF values
+    # extract TF-IDF values
     tfidf_values = [entry[1] for entry in words]  
 
-    # Pad with zeros if necessary
+    # pad with zeros if necessary
     while len(tfidf_values) < MAX_VECTOR_SIZE:
         tfidf_values.append(0)
 
     speech_vectors.append(tfidf_values)
 
-# Convert to NumPy array
+# convert to NumPy array
 speech_vectors = np.array(speech_vectors, dtype=np.float32)  
 
-# Standardize features (helps clustering)
+# standardize features (helps clustering)
 scaler = StandardScaler()
 speech_vectors_scaled = scaler.fit_transform(speech_vectors)
 
-# Apply K-Means Clustering
-num_clusters = 5  # Adjust as needed
+# apply K-Means Clustering
+num_clusters = 10  # adjust as needed
 kmeans = KMeans(n_clusters=num_clusters, random_state=42)
 clusters = kmeans.fit_predict(speech_vectors_scaled)
 
-# Create a DataFrame mapping speeches to clusters
+# create a DataFrame mapping speeches to clusters
 clustered_data = pd.DataFrame({"Speech_ID": speech_ids, "Cluster": clusters})
 
-# Group by cluster and save to CSV
+# group by cluster and save to CSV
 grouped_clusters = clustered_data.groupby("Cluster")["Speech_ID"].apply(list).reset_index()
 grouped_clusters.to_csv("clustered_speeches.csv", index=False)
 
-# Visualize with PCA (reduce to 2D)
+# visualize with PCA (reduce to 2D)
 pca = PCA(n_components=2)
 speech_vectors_pca = pca.fit_transform(speech_vectors_scaled)
 
