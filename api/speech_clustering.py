@@ -2,7 +2,7 @@ import json
 import numpy as np
 import pandas as pd
 import sys
-from sklearn.cluster import KMeans, DBSCAN
+from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
