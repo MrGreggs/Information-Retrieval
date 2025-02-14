@@ -1,13 +1,14 @@
 import json
 import numpy as np
 import pandas as pd
-from sklearn.cluster import KMeans
+import sys
+from sklearn.cluster import KMeans, DBSCAN
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
 # Load CSV file
-csv_file = "small.csv"
+csv_file = sys.argv[1]
 df = pd.read_csv(csv_file)
 
 # Load TF-IDF JSON file
@@ -41,7 +42,7 @@ scaler = StandardScaler()
 speech_vectors_scaled = scaler.fit_transform(speech_vectors)
 
 # Apply K-Means Clustering
-num_clusters = 5  # Adjust as needed
+num_clusters = 8  # Adjust as needed
 kmeans = KMeans(n_clusters=num_clusters, random_state=42)
 clusters = kmeans.fit_predict(speech_vectors_scaled)
 
