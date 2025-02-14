@@ -37,8 +37,8 @@ speech_vectors = np.array(speech_vectors, dtype=np.float32)
 scaler = StandardScaler()
 speech_vectors_scaled = scaler.fit_transform(speech_vectors)
 
-# Apply K-Means Clustering
-num_clusters = 8  # Adjust as needed
+# apply K-Means Clustering
+num_clusters = 8  # adjust as needed
 kmeans = KMeans(n_clusters=num_clusters, random_state=42)
 clusters = kmeans.fit_predict(speech_vectors_scaled)
 
